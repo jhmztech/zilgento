@@ -1,0 +1,99 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2019 Amasty (https://www.amasty.com)
+ * @package Amasty_Mostviewed
+ */
+?>
+<?php
+/** @var \Amasty\Mostviewed\Block\Widget\Related $block */
+?>
+<?php if (($products = $block->getProductCollection()) && $products->getSize()) : ?>
+    <?php $isSlider = $block->getBlockLayout();
+          $tagWrap = $isSlider ? 'div' : 'ol';
+          $tag = $isSlider ? 'div' : 'li';  ?>
+    <div class="block widget amrelated block-featured-products-list" id="amrelated-block-<?= (int)$block->getGroupId();?>">
+        <?php if ($block->getTitle()) : ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($block->getTitle())) ?></strong>
+            </div>
+        <?php endif ?>
+        <div class="block-content amrelated-sidebar-wrap">
+            <?php $suffix = $block->getNameInLayout(); ?>
+            <?php $iterator = 1; ?>
+            <<?= $tagWrap?> class="product-items" id="widget-featured-products-<?= /* @escapeNotVerified */ $suffix ?>" <?= $isSlider ? 'data-amrelated-js="slider"' : ''?>>
+                <?php foreach ($products->getItems() as $_product) : ?>
+                    <?= /* @escapeNotVerified */ ($iterator++ == 1) ? '<' . $tag . ' class="product-item">' : '</' . $tag . '><' . $tag . ' class="product-item">' ?>
+                    <div class="product-item-info">
+                        <a class="product-item-photo" href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>"
+                           title="<?= /* @escapeNotVerified */ $block->stripTags($_product->getName(), null, true) ?>">
+                            <?= $block->getImage($_product, 'related_products_sidebar')->toHtml() ?>
+                        </a>
+                        <div class="product-item-details">
+                            <strong class="product-item-name">
+                                <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>"
+                                   title="<?= /* @escapeNotVerified */ $block->stripTags($_product->getName(), null, true) ?>)" class="product-item-link">
+                                    <?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getName(), 'name') ?>
+                                </a>
+                            </strong>
+                            <?= $block->getReviewsSummaryHtml($_product, \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW) ?>
+                            <?= /* @escapeNotVerified */ $block->getProductPriceHtml($_product, \Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE) ?>
+                            <div class="product-item-actions">
+                                <div class="actions-primary">
+                                    <?php if ($_product->isSaleable() && $block->getAddToCart()) : ?>
+                                        <?php if ($_product->getTypeInstance()->hasRequiredOptions($_product)) : ?>
+                                            <button type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>"
+                                                    class="action tocart primary"
+                                                    data-mage-init='{"redirectUrl":{"url":"<?= /* @escapeNotVerified */ $block->getAddToCartUrl($_product) ?>"}}'>
+                                                <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                            </button>
+                                        <?php else : ?>
+                                            <?php
+                                            $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                                            $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_product), ['product' => $_product->getEntityId()]);
+                                            ?>
+                                            <button type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>"
+                                                    class="action tocart primary"
+                                                    data-post='<?= /* @escapeNotVerified */ $postData ?>'>
+                                                <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php else : ?>
+                                        <?php if ($_product->getIsSalable()) : ?>
+                                            <div class="stock available" title="<?= /* @escapeNotVerified */ __('Availability') ?>">
+                                                <span><?= /* @escapeNotVerified */ __('In stock') ?></span>
+                                            </div>
+                                        <?php else : ?>
+                                            <div class="stock unavailable" title="<?= /* @escapeNotVerified */ __('Availability') ?>">
+                                                <span><?= /* @escapeNotVerified */ __('Out of stock') ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?= ($iterator == count($products->getItems())+1) ? '</' . $tag . '>' : '' ?>
+                <?php endforeach; ?>
+            </<?= $tagWrap?>>
+        </div>
+    </div>
+    <?php if ($isSlider) : ?>
+        <script type="text/javascript">
+            require([
+                "jquery",
+                "Amasty_Base/vendor/slick/slick.min"
+            ], function ($) {
+                $('[data-amrelated-js="slider"]').slick(
+                    {
+                        dots:true,
+                        infinite: true,
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                );
+            });
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
+

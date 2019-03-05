@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../vendor/magento/mtf/etc/variations.xsd">
+    <testCase name="Magento\Checkout\Test\TestCase\OnePageCheckoutTest">
+        <variation name="OnePageCheckoutCustomerBalanceTestVariation1">
+            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
+        </variation>
+        <variation name="OnePageCheckoutCustomerBalanceTestVariation2">
+            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
+        </variation>
+        <variation name="OnePageCheckoutUsingNonDefaultAddress">
+            <data name="issue" xsi:type="string">MQE-1160: Fix MTF skipped tests</data>
+        </variation>
+    </testCase>
+</config>
